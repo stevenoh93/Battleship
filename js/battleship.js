@@ -63,7 +63,10 @@ function makeBackground() {
     texture.repeat.set(3,3);
     var boxMaterial = new THREE.MeshBasicMaterial({
         map:texture,
-        side:THREE.DoubleSide
+        side:THREE.DoubleSide,
+        transparent: true, 
+        opacity: 0.5, 
+        color: 0xFFFFFF
     });
 	for (var i=-10; i<=10; i+=10) {
         for (var j=-10; j<=10; j+=10) {
