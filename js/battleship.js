@@ -19,10 +19,10 @@ function init() {
     renderer.setSize( innerWidth, innerHeight );
 
     //Camera:
-    camera = new THREE.PerspectiveCamera( 40, aspectRatio, 0.1, 10000 );
+    camera = new THREE.PerspectiveCamera( 50, aspectRatio, 0.1, 10000 );
     camera.position.set( 0, -200, 400 );
     camera.up = new THREE.Vector3(0,0,1);
-    camera.lookAt(new THREE.Vector3(0,0,0));
+    // camera.lookAt(new THREE.Vector3(-100,0,500));
 
     //CameraControls:
     cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -85,8 +85,10 @@ function makeBackground() {
 
 	// Make grid
 	for (var i=-10; i<=10; i+=2) {
-		createAxis( new THREE.Vector3( i*10, 100, 0 ), new THREE.Vector3( i*10, -100, 0 ), 0x000000);
-		createAxis( new THREE.Vector3( 100, i*10, 0 ), new THREE.Vector3( -100, i*10, 0 ), 0x000000);
+		createAxis( new THREE.Vector3( i*10 + 200, 100, 0 ), new THREE.Vector3( i*10 + 200, -100, 0 ), 0xffffff);
+		createAxis( new THREE.Vector3( 300, i*10, 0 ), new THREE.Vector3( 100, i*10, 0 ), 0xffffff);
+        createAxis( new THREE.Vector3( i*10 - 200, 100, 0 ), new THREE.Vector3( i*10 - 200, -100, 0 ), 0xffffff);
+        createAxis( new THREE.Vector3( -300, i*10, 0 ), new THREE.Vector3( -100, i*10, 0 ), 0xffffff);
 	}
 	
 }
@@ -96,48 +98,51 @@ function makeShips() {
 
 	// Small ship
 	var smallShipPts = [];
-	smallShipPts.push( new THREE.Vector2 ( 0, 20 ) );
+	smallShipPts.push( new THREE.Vector2 ( 0, 18 ) );
 	smallShipPts.push( new THREE.Vector2 ( -8, 10 ) );
 	smallShipPts.push( new THREE.Vector2 ( -8, -10 ) );
-	smallShipPts.push( new THREE.Vector2 ( 0, -20 ) );
+	smallShipPts.push( new THREE.Vector2 ( 0, -18 ) );
 	smallShipPts.push( new THREE.Vector2 ( 8, -10 ) );
 	smallShipPts.push( new THREE.Vector2 ( 8, 10 ) );
 	var smallShipShape = new THREE.Shape( smallShipPts );
-	textureAndAdd( smallShipShape, extrudeSettings, 0, -50, 1 );
+    var smallShipPos = board2canvas(1,1, 1,2, -1);
+	textureAndAdd( smallShipShape, extrudeSettings, smallShipPos.xcoord, smallShipPos.ycoord, smallShipPos.rot );
 
 	// Medium ship
 	var medShipPts = [];
-	medShipPts.push( new THREE.Vector2 ( 4, 30 ) );
-	medShipPts.push( new THREE.Vector2 ( -4, 30 ) );
+	medShipPts.push( new THREE.Vector2 ( 4, 28 ) );
+	medShipPts.push( new THREE.Vector2 ( -4, 28 ) );
 	medShipPts.push( new THREE.Vector2 ( -8, 15 ) );
 	medShipPts.push( new THREE.Vector2 ( -8, 0 ) );
 	medShipPts.push( new THREE.Vector2 ( -8, -15 ) );
-	medShipPts.push( new THREE.Vector2 ( -4, -30 ) );
-	medShipPts.push( new THREE.Vector2 ( 4, -30 ) );
+	medShipPts.push( new THREE.Vector2 ( -4, -28 ) );
+	medShipPts.push( new THREE.Vector2 ( 4, -28 ) );
 	medShipPts.push( new THREE.Vector2 ( 8, -15 ) );
 	medShipPts.push( new THREE.Vector2 ( 8, 15 ) );
 	var medShipShape = new THREE.Shape( medShipPts );
-	textureAndAdd( medShipShape, extrudeSettings, -50, -50, 1 );
+    var medShipPos = board2canvas(6,6, 8,6, -1);
+	textureAndAdd( medShipShape, extrudeSettings, medShipPos.xcoord, medShipPos.ycoord, medShipPos.rot );
 
 	// Large ship
 	var largeShipPts = [];
-	largeShipPts.push( new THREE.Vector2 ( 3, 40 ) );
-	largeShipPts.push( new THREE.Vector2 ( -3, 40 ) );
-	largeShipPts.push( new THREE.Vector2 ( -6, 35 ) );
+	largeShipPts.push( new THREE.Vector2 ( 3, 38 ) );
+	largeShipPts.push( new THREE.Vector2 ( -3, 38 ) );
+	largeShipPts.push( new THREE.Vector2 ( -6, 33 ) );
 	largeShipPts.push( new THREE.Vector2 ( -9, 20 ) );
 	largeShipPts.push( new THREE.Vector2 ( -9, -20 ) );
-	largeShipPts.push( new THREE.Vector2 ( -6, -35 ) );
-	largeShipPts.push( new THREE.Vector2 ( -3, -40 ) );
-	largeShipPts.push( new THREE.Vector2 ( 3, -40 ) );
-	largeShipPts.push( new THREE.Vector2 ( 6, -35 ) );
+	largeShipPts.push( new THREE.Vector2 ( -6, -33 ) );
+	largeShipPts.push( new THREE.Vector2 ( -3, -38 ) );
+	largeShipPts.push( new THREE.Vector2 ( 3, -38 ) );
+	largeShipPts.push( new THREE.Vector2 ( 6, -33 ) );
 	largeShipPts.push( new THREE.Vector2 ( 9, -20 ) );
 	largeShipPts.push( new THREE.Vector2 ( 9, 20 ) );
-	largeShipPts.push( new THREE.Vector2 ( 6, 35 ) );
+	largeShipPts.push( new THREE.Vector2 ( 6, 33 ) );
 	var largeShipShape = new THREE.Shape( largeShipPts );
-	textureAndAdd( largeShipShape, extrudeSettings, 50, -50, 1);
+    var largeShipPos = board2canvas(3,3, 3,6, -1);
+	textureAndAdd( largeShipShape, extrudeSettings, largeShipPos.xcoord, largeShipPos.ycoord, largeShipPos.rot );
 }
 
-function textureAndAdd(shape, extrudeSettings, px, py, pz) {
+function textureAndAdd(shape, extrudeSettings, px, py, rot) {
 	var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 	var texture = new THREE.ImageUtils.loadTexture( "textures/ship_side.jpg" );
 	texture.wrapS = THREE.ClampToEdgeWrapping;
@@ -153,7 +158,8 @@ function textureAndAdd(shape, extrudeSettings, px, py, pz) {
 	//     transparent: true
 	// })]);
 	var mesh = new THREE.Mesh( geometry, material );
-	mesh.position.set( px, py, pz );
+	mesh.position.set( px, py, 1 );
+    mesh.rotation.z = rot;
 	group.add( mesh );
 }
 
@@ -168,21 +174,4 @@ var debugaxis = function(axisLength){
     // createAxis(v(0, 0, 0), v(0, 0, axisLength), 0x0000FF);
 };
 
-// Create axis (point1, point2, colour)
-function createAxis(p1, p2, color){
-    var line, lineGeometry = new THREE.Geometry(),
-    lineMat = new THREE.LineBasicMaterial({color: color, lineWidth: 2});
-    lineGeometry.vertices.push(p1, p2);
-    line = new THREE.Line(lineGeometry, lineMat);
-    scene.add(line);
-}
 
-// Convert board coordinates to canvas coordinates
-// Board coordinates range 0-9 starting 2nd quad
-// canvas coordinates range -100-100
-var board2canvas = function(x, y) {
-	board2canvas = {
-		xcoord : (x*20+10) - 100,
-		ycoord : 100 - (y*20+10) 
-	};
-}
