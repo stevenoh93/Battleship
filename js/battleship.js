@@ -6,7 +6,7 @@ var cameraControls;
 
 var waters = [];
 
-var group;
+var boardGroup;
 
 function init() {
 	var innerWidth = window.innerWidth;
@@ -27,9 +27,8 @@ function init() {
     //CameraControls:
     cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
 
-    group = new THREE.Group();
-    // group.position.y=50;
-	
+    boardGroup = new THREE.Group();
+    
 	var container = document.getElementById( "container" );
     container.appendChild( renderer.domElement );    
 }
@@ -47,7 +46,7 @@ function drawScene() {
 		scene.add( waters[i] );
 	}
 
-	scene.add( group );
+	scene.add( boardGroup );
     
     debugaxis(1000);
 }
@@ -90,7 +89,32 @@ function makeBackground() {
         createAxis( new THREE.Vector3( i*10 - 200, 100, 0 ), new THREE.Vector3( i*10 - 200, -100, 0 ), 0xffffff);
         createAxis( new THREE.Vector3( -300, i*10, 0 ), new THREE.Vector3( -100, i*10, 0 ), 0xffffff);
 	}
-	
+
+    // Add grid label
+    // ys are numbers 0-9, xs are alphabets a-j
+    var textMaterial = new THREE.MeshBasicMaterial( {color: 0xFFFFFF, overdraw: 0.5} );
+    var textSettings = {
+            size: 18,
+            height: 5,
+            curveSegments: 2,
+            font: "helvetiker"
+        }
+    for (var i=0; i<10; i++) {
+        var numsGeo = new THREE.TextGeometry( i.toString(), textSettings);
+        var alphGeo = new THREE.TextGeometry( String.fromCharCode(65+i), textSettings );
+        var text1 = new THREE.Mesh( numsGeo, textMaterial );
+        var text2 = new THREE.Mesh( numsGeo, textMaterial );
+        var text3 = new THREE.Mesh( alphGeo, textMaterial );
+        var text4 = new THREE.Mesh( alphGeo, textMaterial );
+        text1.position.set( -300 + i*20 + 2, 100, 1 );
+        scene.add( text1 );
+        text2.position.set( 100 + i*20, 100, 1 );
+        scene.add( text2 );
+        text3.position.set( -99, 80 - i*20 - 1, 1 );
+        scene.add( text3 );
+        text4.position.set( 81, 80 - i*20 - 1, 1 );
+        scene.add( text4 );
+    }
 }
 
 function makeShips() {
@@ -160,7 +184,7 @@ function textureAndAdd(shape, extrudeSettings, px, py, rot) {
 	var mesh = new THREE.Mesh( geometry, material );
 	mesh.position.set( px, py, 1 );
     mesh.rotation.z = rot;
-	group.add( mesh );
+	boardGroup.add( mesh );
 }
 
 var debugaxis = function(axisLength){
