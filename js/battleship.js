@@ -37,12 +37,15 @@ function drawScene() {
     scene = new THREE.Scene();
 	
     var ambientLight = new THREE.AmbientLight( 0xFFFFFF );
+    var pointLight = new THREE.PointLight( 0xFFFFFFF, 1, 100 );
+    pointLight.position.set(0, -200, 400);
 	scene.add( ambientLight );
+    scene.add( pointLight );
 
 	makeBackground();
 	makeShips();
     // Draw waters
-	for (var i=0; i<27; i++) {
+	for (var i=0; i<waters.length; i++) {
 		scene.add( waters[i] );
 	}
 
@@ -62,22 +65,29 @@ function render() {
 }
 
 function makeBackground() {
-    var boxGeo = new THREE.BoxGeometry( 200, 200, 10 );
+    var boxGeo = new THREE.BoxGeometry( 20, 20, 10 );
     var texture = THREE.ImageUtils.loadTexture( "textures/water.jpg" );
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set( 1, 1 );
-    var boxMaterial = new THREE.MeshBasicMaterial({
+    var boxMaterial = new THREE.MeshPhongMaterial({
         map:texture,
-        side:THREE.DoubleSide,
         transparent: true, 
         opacity: 0.5, 
-        color: 0xFFFFFF
+        
     });
-	for (var i=-1; i<=1; i++) {
-        for (var j=-1; j<=1; j++) {
-            var box = new THREE.Mesh( boxGeo, boxMaterial );
-            box.position.set(i*200, j*200, 0);
+    var transparent = new THREE.MeshPhongMaterial({
+        color: 0x000000,
+        transparent: true,
+        opacity: 0,
+        specular: 0xffffff
+    });
+    var materials = [transparent, transparent, transparent, transparent, boxMaterial, transparent];
+    var boxFaceMaterials = new THREE.MeshFaceMaterial( materials );
+	for (var i=-17; i<=18; i++) {
+        for (var j=-7; j<=8; j++) {
+            var box = new THREE.Mesh( boxGeo, boxFaceMaterials );
+            box.position.set(i*20-10, j*20-10, 0);
     		waters.push( box );
         }
 	}
@@ -174,7 +184,7 @@ function textureAndAdd(shape, extrudeSettings, px, py, rot) {
 	texture.minFilter = THREE.NearestFilter;
 	var material = new THREE.MeshBasicMaterial({
         map:texture,
-        // side:THREE.DoubleSide
+        side:THREE.TopSide
     });
     // var mesh = THREE.SceneUtils.createMultiMaterialObject(geometry, [material, new     THREE.MeshBasicMaterial({
 	//     color: 0x000000,
