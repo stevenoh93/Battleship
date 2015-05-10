@@ -28,3 +28,27 @@ function board2canvas(sx, sy, ex, ey, side) {
 		};
 	}
 }
+
+function xy2lin(xcoord, ycoord) {
+
+}
+
+function makeMove(event) {
+	if (event.keyCode == 13) { // Enter
+		var value = document.getElementById("move").value;
+		if (isNaN(value[0])) {
+			var x = parseInt(value[1]);
+			if (value[0] > 96)
+				var y = value[0].charCodeAt(0) - 97;
+			else	
+				var y = value[0].charCodeAt(0) - 65;
+		} else {
+			if (value[1] > 96)
+				var y = value[1].charCodeAt(0) - 97;
+			else	
+				var y = value[1].charCodeAt(0) - 65;
+			var x = parseInt(value[0]);			
+		}
+		console.log("("+x+", "+y+")");
+	}
+}
