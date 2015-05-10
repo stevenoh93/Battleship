@@ -29,26 +29,39 @@ function board2canvas(sx, sy, ex, ey, side) {
 	}
 }
 
-function xy2lin(xcoord, ycoord) {
+// side=-1 for player's board, 1 for ai's board
+function xy2lin(xcoord, ycoord, side) {
+	lin = xcoord*16+60 - ycoord;
+	if (side > 0)
+		lin += 320;
+	return lin;
+}
 
+function markWaterHit(xcoord, ycoord, side) {
+	var lin = xy2lin(xcoord, ycoord, side);
+	waters[lin].material.materials[4].color.setHex(0xff0000);
 }
 
 function makeMove(event) {
 	if (event.keyCode == 13) { // Enter
-		var value = document.getElementById("move").value;
+		var input = document.getElementById("move");
+		var value = input.value;
+		input.value = "";
+
 		if (isNaN(value[0])) {
 			var x = parseInt(value[1]);
-			if (value[0] > 96)
+			if (value[0].charCodeAt(0) > 96)
 				var y = value[0].charCodeAt(0) - 97;
 			else	
 				var y = value[0].charCodeAt(0) - 65;
 		} else {
-			if (value[1] > 96)
+			if (value[1].charCodeAt(0) > 96)
 				var y = value[1].charCodeAt(0) - 97;
 			else	
 				var y = value[1].charCodeAt(0) - 65;
 			var x = parseInt(value[0]);			
 		}
 		console.log("("+x+", "+y+")");
+		markWaterHit(x,y,1);
 	}
 }

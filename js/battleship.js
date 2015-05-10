@@ -70,16 +70,6 @@ function drawScene() {
 	for (var i=0; i<waters.length; i++) {
 		scene.add( waters[i] );
 	}
-	waters[10].material.materials[0].color.setHex(0xff0000);
-	waters[10].material.materials[1].color.setHex(0xff0000);
-	waters[10].material.materials[2].color.setHex(0xff0000);
-	waters[10].material.materials[3].color.setHex(0xff0000);
-	waters[10].material.materials[4].color.setHex(0xff0000);
-	// waters[10].material.materials[5].color.setHex(0xff0000);
-	// waters[20].material.color.setHex(0xff0000);
-	// waters[27].material.color.setHex(0xff0000);
-	// waters[79].material.color.setHex(0xff0000);
-
 	scene.add( boardGroup );
 	
 	debugaxis(1000);
@@ -126,10 +116,10 @@ function makeBackground() {
 
 	// Make grid
 	for (var i=-10; i<=10; i+=2) {
-		createAxis( new THREE.Vector3( i*10 + 200, 100, 0 ), new THREE.Vector3( i*10 + 200, -100, 0 ), 0xffffff);
-		createAxis( new THREE.Vector3( 300, i*10, 0 ), new THREE.Vector3( 100, i*10, 0 ), 0xffffff);
-		createAxis( new THREE.Vector3( i*10 - 200, 100, 0 ), new THREE.Vector3( i*10 - 200, -100, 0 ), 0xffffff);
-		createAxis( new THREE.Vector3( -300, i*10, 0 ), new THREE.Vector3( -100, i*10, 0 ), 0xffffff);
+		createAxis( new THREE.Vector3( i*10 + 200, 100, 5 ), new THREE.Vector3( i*10 + 200, -100, 5 ), 0xffffff);
+		createAxis( new THREE.Vector3( 300, i*10, 5 ), new THREE.Vector3( 100, i*10, 5 ), 0xffffff);
+		createAxis( new THREE.Vector3( i*10 - 200, 100, 5 ), new THREE.Vector3( i*10 - 200, -100, 5 ), 0xffffff);
+		createAxis( new THREE.Vector3( -300, i*10, 5 ), new THREE.Vector3( -100, i*10, 5 ), 0xffffff);
 	}
 
 	// Add grid label
