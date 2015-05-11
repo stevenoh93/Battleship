@@ -37,11 +37,6 @@ function xy2lin(xcoord, ycoord, side) {
 	return lin;
 }
 
-function markWaterHit(xcoord, ycoord, side) {
-	var lin = xy2lin(xcoord, ycoord, side);
-	waters[lin].material.materials[4].color.setHex(0xff0000);
-}
-
 function makeMove(event) {
 	if (event.keyCode == 13) { // Enter
 		var input = document.getElementById("move");
@@ -62,6 +57,42 @@ function makeMove(event) {
 			var x = parseInt(value[0]);			
 		}
 		console.log("("+x+", "+y+")");
-		markWaterHit(x,y,1);
+		if (processHit(x,y,1))
+			console.log("HIT");//Display hit
+	}
+}
+
+function processHit(x, y, side) {
+	var shipLoc, hit;
+	if (side > 0) {
+		shipLoc = aShipLoc;
+		hit = aHit;
+	}
+	else {
+		shipLoc = pShipLoc;
+		hit = pHit;
+	}
+	var lin = xy2lin(x, y, side);
+	hit[x][y] = true;
+	// console.log("shipLoc: \n");
+	// printMatrix(shipLoc);
+	// console.log("hit: \n");
+	// printMatrix(hit);
+	if (shipLoc[x][y] && hit[x][y]) { // Ship hit
+		shipLoc[x][y] = false;
+		waters[lin].material.materials[4].color.setHex(0xff0000);
+		return true;
+	}
+	waters[lin].material.materials[4].color.setHex(0x0000ff);
+	return false;
+}
+
+function printMatrix(mat) {
+	var out = ""
+	for (var i=0; i<mat.length; i++) {
+		for (var j=0; j<mat[i].length; j++)
+			out += mat[i][j] + ", ";
+		console.log(out);
+		out = "";
 	}
 }

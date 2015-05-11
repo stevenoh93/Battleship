@@ -8,12 +8,14 @@ var waters = [];
 
 var boardGroup;
 
-var pChosen = [];
+var pHit = [];
 var pShipLoc = [];
 var aShipLoc = [];
-var aChosen = [];
+var aHit = [];
 var playersTurn = true;
 
+var smallShipShape, medShipShape, largeShipShape;
+var extrudeSettings = { amount: 8, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
 
 function init() {
 	var innerWidth = window.innerWidth;
@@ -36,14 +38,29 @@ function init() {
 
 	// Game logic
 	for (var i=0; i<10; i++) {
-		var row = [];
+		var row1 = [];
 		for (var j=0; j<10; j++) {
-			row.push(false);
+			row1.push(false);
 		}
-		pChosen.push(row);
-		pShipLoc.push(row);
-		aShipLoc.push(row);
-		aChosen.push(row);
+		pHit.push(row1);
+
+		var row2 = [];
+		for (var j=0; j<10; j++) {
+			row2.push(false);
+		}
+		aHit.push(row2);
+
+		var row3 = [];
+		for (var j=0; j<10; j++) {
+			row3.push(false);
+		}
+		aShipLoc.push(row3);
+		
+		var row4 = [];
+		for (var j=0; j<10; j++) {
+			row4.push(false);
+		}
+		pShipLoc.push(row4);
 	}
 
 	boardGroup = new THREE.Group();
@@ -71,6 +88,10 @@ function drawScene() {
 		scene.add( waters[i] );
 	}
 	scene.add( boardGroup );
+
+	textureAndAdd( smallShipShape, extrudeSettings, 4,4, 1,2, 1 );
+	textureAndAdd( medShipShape, extrudeSettings, 6,8, 4,4, 1 );
+	textureAndAdd( largeShipShape, extrudeSettings, 0,0, 6,9, 1 );
 	
 	debugaxis(1000);
 }
@@ -150,8 +171,6 @@ function makeBackground() {
 }
 
 function makeShips() {
-	var extrudeSettings = { amount: 8, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
-
 	// Small ship
 	var smallShipPts = [];
 	smallShipPts.push( new THREE.Vector2 ( 0, 18 ) );
@@ -160,7 +179,7 @@ function makeShips() {
 	smallShipPts.push( new THREE.Vector2 ( 0, -18 ) );
 	smallShipPts.push( new THREE.Vector2 ( 8, -10 ) );
 	smallShipPts.push( new THREE.Vector2 ( 8, 10 ) );
-	var smallShipShape = new THREE.Shape( smallShipPts );
+	smallShipShape = new THREE.Shape( smallShipPts );
 	textureAndAdd( smallShipShape, extrudeSettings, 1,1, 1,2, -1 );
 
 	// Medium ship
@@ -174,8 +193,8 @@ function makeShips() {
 	medShipPts.push( new THREE.Vector2 ( 4, -28 ) );
 	medShipPts.push( new THREE.Vector2 ( 8, -15 ) );
 	medShipPts.push( new THREE.Vector2 ( 8, 15 ) );
-	var medShipShape = new THREE.Shape( medShipPts );
-	textureAndAdd( medShipShape, extrudeSettings, 6,6, 8,6, -1 );
+	medShipShape = new THREE.Shape( medShipPts );
+	textureAndAdd( medShipShape, extrudeSettings, 6,6, 6,8, -1 );
 
 	// Large ship
 	var largeShipPts = [];
@@ -191,12 +210,28 @@ function makeShips() {
 	largeShipPts.push( new THREE.Vector2 ( 9, -20 ) );
 	largeShipPts.push( new THREE.Vector2 ( 9, 20 ) );
 	largeShipPts.push( new THREE.Vector2 ( 6, 33 ) );
-	var largeShipShape = new THREE.Shape( largeShipPts );
+	largeShipShape = new THREE.Shape( largeShipPts );
 	textureAndAdd( largeShipShape, extrudeSettings, 3,3, 3,6, -1);
 }
 
+// ex and ey must be >= sx and sy respectively
 function textureAndAdd(shape, extrudeSettings, sx, ex, sy, ey, side) {
-	var coords = board2canvas(sx,ex, sy,ey, side);
+	var coords = board2canvas(sx,sy, ex,ey, side);
+	if (sx != ex) {
+		if (side < 0)	
+			for (var i=0; i<ex-sx+1; i++)
+				pShipLoc[sx+i][sy] = true;
+		else
+			for (var i=0; i<ex-sx+1; i++)
+				aShipLoc[sx+i][sy] = true;
+	} else {
+		if (side < 0)	
+			for (var i=0; i<ey-sy+1; i++)
+				pShipLoc[sx][sy+i] = true;
+		else
+			for (var i=0; i<ey-sy+1; i++)
+				aShipLoc[sx][sy+i] = true;
+	}
 	var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 	var texture = new THREE.ImageUtils.loadTexture( "textures/ship_side.jpg" );
 	texture.wrapS = THREE.ClampToEdgeWrapping;
