@@ -38,7 +38,7 @@ function xy2lin(xcoord, ycoord, side) {
 }
 
 function makeMove(event) {
-	if (event.keyCode == 13) { // Enter
+	if (event.keyCode == 13 && gameInProgress) { // Enter
 		var input = document.getElementById("move");
 		var value = input.value;
 		input.value = "";
@@ -57,8 +57,14 @@ function makeMove(event) {
 			var x = parseInt(value[0]);			
 		}
 		console.log("("+x+", "+y+")");
-		if (processHit(x,y,1))
-			console.log("HIT");//Display hit
+		if (processHit(x,y,1)) {
+			// Display hit
+			console.log("HIT");
+			gameInProgress = checkGameOver();
+		}
+		else {
+			// AI move
+		}
 	}
 }
 
@@ -74,16 +80,31 @@ function processHit(x, y, side) {
 	}
 	var lin = xy2lin(x, y, side);
 	hit[x][y] = true;
-	// console.log("shipLoc: \n");
-	// printMatrix(shipLoc);
-	// console.log("hit: \n");
-	// printMatrix(hit);
 	if (shipLoc[x][y] && hit[x][y]) { // Ship hit
 		shipLoc[x][y] = false;
 		waters[lin].material.materials[4].color.setHex(0xff0000);
+		if (side < 0)
+			pShipCount--;
+		else
+			aShipCount--;
 		return true;
 	}
 	waters[lin].material.materials[4].color.setHex(0x0000ff);
+	return false;
+}
+
+function checkGameOver() {
+	if (aShipCount == 0) {
+		// Player wins
+		console.log("Player wins");
+		document.getElementById("winmessage").style.display="inline";
+		return true;
+	} else if (pShipCount == 0) {
+		// Player loses
+		console.log("Player loses");
+		document.getElementById("lostmessage").style.display="inline";
+		return true;
+	}
 	return false;
 }
 

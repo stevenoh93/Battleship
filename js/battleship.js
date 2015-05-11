@@ -12,7 +12,10 @@ var pHit = [];
 var pShipLoc = [];
 var aShipLoc = [];
 var aHit = [];
-var playersTurn = true;
+var pShipCount = 0;
+var aShipCount = 0;
+var gameInProgress = false;
+
 
 var smallShipShape, medShipShape, largeShipShape;
 var extrudeSettings = { amount: 8, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
@@ -127,7 +130,15 @@ function makeBackground() {
 				transparent: true, 
 				opacity: 0.5, 
 			});
-			var materials = [transparent, transparent, transparent, transparent, boxMaterial, transparent];
+			var materials = [transparent, transparent, transparent, transparent, boxMaterial, boxMaterial];
+			if (i==-17)
+				materials[1] = boxMaterial;
+			if (j==-7)
+				materials[3] = boxMaterial;
+			if (j==8)
+				materials[2] = boxMaterial;
+			if (i==18)
+				materials[0] = boxMaterial;
 			var boxFaceMaterials = new THREE.MeshFaceMaterial( materials );
 			var box = new THREE.Mesh( boxGeo, boxFaceMaterials );
 			box.position.set(i*20-10, j*20-10, 0);
@@ -219,37 +230,47 @@ function textureAndAdd(shape, extrudeSettings, sx, ex, sy, ey, side) {
 	var coords = board2canvas(sx,sy, ex,ey, side);
 	if (sx != ex) {
 		if (side < 0)	
-			for (var i=0; i<ex-sx+1; i++)
+			for (var i=0; i<ex-sx+1; i++) {
 				pShipLoc[sx+i][sy] = true;
+				pShipCount++;
+			}
 		else
-			for (var i=0; i<ex-sx+1; i++)
+			for (var i=0; i<ex-sx+1; i++) {
 				aShipLoc[sx+i][sy] = true;
+				aShipCount++;
+			}
 	} else {
 		if (side < 0)	
-			for (var i=0; i<ey-sy+1; i++)
+			for (var i=0; i<ey-sy+1; i++){
 				pShipLoc[sx][sy+i] = true;
+				pShipCount++;
+			}
 		else
-			for (var i=0; i<ey-sy+1; i++)
+			for (var i=0; i<ey-sy+1; i++) {
 				aShipLoc[sx][sy+i] = true;
+				aShipCount++;
+			}
 	}
-	var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-	var texture = new THREE.ImageUtils.loadTexture( "textures/ship_side.jpg" );
-	texture.wrapS = THREE.ClampToEdgeWrapping;
-	texture.wrapT = THREE.ClampToEdgeWrapping;
-	texture.minFilter = THREE.NearestFilter;
-	var material = new THREE.MeshBasicMaterial({
-		map:texture,
-		side:THREE.TopSide
-	});
-	// var mesh = THREE.SceneUtils.createMultiMaterialObject(geometry, [material, new     THREE.MeshBasicMaterial({
-	//     color: 0x000000,
-	//     wireframe: true,
-	//     transparent: true
-	// })]);
-	var mesh = new THREE.Mesh( geometry, material );
-	mesh.position.set( coords.xcoord, coords.ycoord, 1 );
-	mesh.rotation.z = coords.rot;
-	boardGroup.add( mesh );
+	if (side < 0) {
+		var geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+		var texture = new THREE.ImageUtils.loadTexture( "textures/ship_side.jpg" );
+		texture.wrapS = THREE.ClampToEdgeWrapping;
+		texture.wrapT = THREE.ClampToEdgeWrapping;
+		texture.minFilter = THREE.NearestFilter;
+		var material = new THREE.MeshBasicMaterial({
+			map:texture,
+			side:THREE.TopSide
+		});
+		// var mesh = THREE.SceneUtils.createMultiMaterialObject(geometry, [material, new     THREE.MeshBasicMaterial({
+		//     color: 0x000000,
+		//     wireframe: true,
+		//     transparent: true
+		// })]);
+		var mesh = new THREE.Mesh( geometry, material );
+		mesh.position.set( coords.xcoord, coords.ycoord, 1 );
+		mesh.rotation.z = coords.rot;
+		boardGroup.add( mesh );
+	}
 }
 
 
