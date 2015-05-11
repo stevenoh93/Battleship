@@ -44,6 +44,11 @@ function xy2lin(xcoord, ycoord, side) {
 	return lin;
 }
 
+var aiPrevMove = [];
+var aiFirstHit = [];
+var aiDir = 0; // -1 -> -x, 1 -> +x, -2 -> -y, 2 -> +y, 0 -> miss
+var aiLen = 0;
+
 function makeMove(event) {
 	if (!gameInProgress && event.keyCode == 13) { // Ship positioned
 		var input = document.getElementById("pos");
@@ -52,6 +57,11 @@ function makeMove(event) {
 		var points = value.split(" ");
 		var start = string2xy(points[0]);
 		var end = string2xy(points[1]);
+		if (start[0]>end[0] || start[1]>end[1]) {
+			var temp = end;
+			end = start;
+			start = temp;
+		}
 		var length = Math.max(Math.abs(start[0]-end[0]), Math.abs(start[1]-end[1]));
 		switch (length) {
 			case 1:
@@ -79,6 +89,72 @@ function makeMove(event) {
 		}
 		else {
 			// AI move
+			var hit = true;
+			while (hit) {
+				var curMove = [0,0];
+				if (aiPrevMove.length == 0) // First move
+					curMove = randomMove();
+				else if (aiDir != 0) { // If a direction is defined
+					switch (aiDir) {
+						case -2:
+							curMove[1] = (aiFirstHit[1]-aiLen)%10;
+							curMove[0] = aiFirstHit[0];
+							break;
+						case 2:
+							curMove[1] = (aiFirstHit[1]+aiLen)%10;
+							curMove[0] = aiFirstHit[0];
+							break;
+						case -1:
+							curMove[0] = (aiFirstHit[0]-aiLen)%10;
+							curMove[1] = aiFirstHit[1];
+							break;
+						case 1:
+							curMove[0] = (aiFirstHit[0]+aiLen)%10;
+							curMove[1] = aiFirstHit[1];
+							break;
+					}
+				} else // No direction
+					curMove = randomMove();
+
+
+				if (processHit(curMove[0],curMove[1],-1)) { // Hit a ship
+					console.log("HIT");
+					aiLen++;
+					hit = true;
+					gameInProgress = !checkGameOver();
+					if (aiDir == 0) { // Hit a new ship
+						aiFirstHit = curMove;
+						if (curMove[1] == 9)
+							if (curMove[0] == 0)
+								aiDir = 1;	
+							else
+								aiDir = -1;
+						else
+							aiDir = -2;
+					} 
+
+					if (aiLen > 3) // Finished a ship
+						aiDir = 0; 
+
+					if ((curMove[1]==9)&&(aiDir==-2) || (curMove[0]==0)&&(aiDir==-1) || (curMove[1]==0)&&(aiDir==2) || (curMove[0]==9)&&(aiDir==1)) {
+						curMove = randomMove();
+						aiDir = 0;
+						aiLen = 0;
+					}
+					aiPrevMove = curMove;	
+				} else { // Missed
+					hit = false;
+					if (aiDir != 0) { // If ship was hit before this move
+						aiDir++;
+						if (aiDir == 0) aiDir++;
+						if (aiDir == 3) {
+							aiDir = 0;
+							aiLen = 0;
+						}
+					} else
+						aiPrevMove = curMove;	
+				}
+			}
 		}
 	}
 }
@@ -148,4 +224,14 @@ function string2xy(value) {
 		var x = parseInt(value[0]);			
 	}
 	return [x, y];
+}
+
+function randomMove() {
+	var	x = Math.floor(Math.random()*10);
+	var	y = Math.floor(Math.random()*10);
+	while (pHit[x][y]) {
+		y = Math.round((y+Math.random())) % 10;
+		x = Math.round((x+Math.random())) % 10;
+	}
+	return [x,y];
 }

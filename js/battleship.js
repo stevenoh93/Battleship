@@ -96,6 +96,12 @@ function drawScene() {
 	textureAndAdd( smallShipShape, extrudeSettings, 4,4, 1,2, 1 );
 	textureAndAdd( medShipShape, extrudeSettings, 6,8, 4,4, 1 );
 	textureAndAdd( largeShipShape, extrudeSettings, 0,0, 6,9, 1 );
+	textureAndAdd( smallShipShape, extrudeSettings, 4,4, 1,2, -1 );
+	textureAndAdd( medShipShape, extrudeSettings, 6,8, 4,4, -1 );
+	textureAndAdd( largeShipShape, extrudeSettings, 0,0, 6,9, -1 );
+	textureAndAdd( largeShipShape, extrudeSettings, 1,1, 6,9, -1 );
+	textureAndAdd( largeShipShape, extrudeSettings, 2,2, 6,9, -1 );
+	textureAndAdd( largeShipShape, extrudeSettings, 3,3, 6,9, -1 );
 	
 	// debugaxis(1000);
 }
@@ -247,11 +253,11 @@ function makeShips() {
 	// Small ship
 	var smallShipPts = [];
 	smallShipPts.push( new THREE.Vector2 ( 0, 18 ) );
-	smallShipPts.push( new THREE.Vector2 ( -8, 10 ) );
-	smallShipPts.push( new THREE.Vector2 ( -8, -10 ) );
+	smallShipPts.push( new THREE.Vector2 ( -7, 10 ) );
+	smallShipPts.push( new THREE.Vector2 ( -7, -10 ) );
 	smallShipPts.push( new THREE.Vector2 ( 0, -18 ) );
-	smallShipPts.push( new THREE.Vector2 ( 8, -10 ) );
-	smallShipPts.push( new THREE.Vector2 ( 8, 10 ) );
+	smallShipPts.push( new THREE.Vector2 ( 7, -10 ) );
+	smallShipPts.push( new THREE.Vector2 ( 7, 10 ) );
 	smallShipShape = new THREE.Shape( smallShipPts );
 	// textureAndAdd( smallShipShape, extrudeSettings, 1,1, 1,2, -1 );
 
@@ -259,13 +265,13 @@ function makeShips() {
 	var medShipPts = [];
 	medShipPts.push( new THREE.Vector2 ( 4, 28 ) );
 	medShipPts.push( new THREE.Vector2 ( -4, 28 ) );
-	medShipPts.push( new THREE.Vector2 ( -8, 15 ) );
-	medShipPts.push( new THREE.Vector2 ( -8, 0 ) );
-	medShipPts.push( new THREE.Vector2 ( -8, -15 ) );
+	medShipPts.push( new THREE.Vector2 ( -7, 15 ) );
+	medShipPts.push( new THREE.Vector2 ( -7, 0 ) );
+	medShipPts.push( new THREE.Vector2 ( -7, -15 ) );
 	medShipPts.push( new THREE.Vector2 ( -4, -28 ) );
 	medShipPts.push( new THREE.Vector2 ( 4, -28 ) );
-	medShipPts.push( new THREE.Vector2 ( 8, -15 ) );
-	medShipPts.push( new THREE.Vector2 ( 8, 15 ) );
+	medShipPts.push( new THREE.Vector2 ( 7, -15 ) );
+	medShipPts.push( new THREE.Vector2 ( 7, 15 ) );
 	medShipShape = new THREE.Shape( medShipPts );
 	// textureAndAdd( medShipShape, extrudeSettings, 6,6, 8,6, -1 );
 
@@ -273,16 +279,16 @@ function makeShips() {
 	var largeShipPts = [];
 	largeShipPts.push( new THREE.Vector2 ( 3, 38 ) );
 	largeShipPts.push( new THREE.Vector2 ( -3, 38 ) );
-	largeShipPts.push( new THREE.Vector2 ( -6, 33 ) );
-	largeShipPts.push( new THREE.Vector2 ( -9, 20 ) );
-	largeShipPts.push( new THREE.Vector2 ( -9, -20 ) );
-	largeShipPts.push( new THREE.Vector2 ( -6, -33 ) );
+	largeShipPts.push( new THREE.Vector2 ( -5, 33 ) );
+	largeShipPts.push( new THREE.Vector2 ( -7, 20 ) );
+	largeShipPts.push( new THREE.Vector2 ( -7, -20 ) );
+	largeShipPts.push( new THREE.Vector2 ( -5, -33 ) );
 	largeShipPts.push( new THREE.Vector2 ( -3, -38 ) );
 	largeShipPts.push( new THREE.Vector2 ( 3, -38 ) );
-	largeShipPts.push( new THREE.Vector2 ( 6, -33 ) );
-	largeShipPts.push( new THREE.Vector2 ( 9, -20 ) );
-	largeShipPts.push( new THREE.Vector2 ( 9, 20 ) );
-	largeShipPts.push( new THREE.Vector2 ( 6, 33 ) );
+	largeShipPts.push( new THREE.Vector2 ( 5, -33 ) );
+	largeShipPts.push( new THREE.Vector2 ( 7, -20 ) );
+	largeShipPts.push( new THREE.Vector2 ( 7, 20 ) );
+	largeShipPts.push( new THREE.Vector2 ( 5, 33 ) );
 	largeShipShape = new THREE.Shape( largeShipPts );
 	// textureAndAdd( largeShipShape, extrudeSettings, 3,3, 6,3, -1);
 }
