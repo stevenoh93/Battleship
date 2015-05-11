@@ -84,79 +84,111 @@ function makeMove(event) {
 
 		if (processHit(point[0],point[1],1)) {
 			// Display hit
-			console.log("HIT");
 			gameInProgress = !checkGameOver();
 		}
 		else {
 			// AI move
-			var hit = true;
-			while (hit) {
+			var h = true;
+			while (h) {
 				var curMove = [0,0];
 				if (aiPrevMove.length == 0) // First move
 					curMove = randomMove();
 				else if (aiDir != 0) { // If a direction is defined
-					switch (aiDir) {
-						case -2:
-							curMove[1] = (aiFirstHit[1]-aiLen)%10;
-							curMove[0] = aiFirstHit[0];
-							break;
-						case 2:
-							curMove[1] = (aiFirstHit[1]+aiLen)%10;
-							curMove[0] = aiFirstHit[0];
-							break;
-						case -1:
-							curMove[0] = (aiFirstHit[0]-aiLen)%10;
-							curMove[1] = aiFirstHit[1];
-							break;
-						case 1:
-							curMove[0] = (aiFirstHit[0]+aiLen)%10;
-							curMove[1] = aiFirstHit[1];
-							break;
-					}
+					curMove = aiNextMove(aiFirstHit, aiDir, aiLen);
 				} else // No direction
 					curMove = randomMove();
 
-
 				if (processHit(curMove[0],curMove[1],-1)) { // Hit a ship
-					console.log("HIT");
 					aiLen++;
-					hit = true;
+					h = true;
 					gameInProgress = !checkGameOver();
 					if (aiDir == 0) { // Hit a new ship
 						aiFirstHit = curMove;
-						if (curMove[1] == 9)
-							if (curMove[0] == 0)
-								aiDir = 1;	
-							else
-								aiDir = -1;
-						else
-							aiDir = -2;
+						aiDir = aiNextDir(curMove, -2);
 					} 
-
-					if (aiLen > 3) // Finished a ship
+					if (aiLen > 3) { // Finished a ship
 						aiDir = 0; 
-
-					if ((curMove[1]==9)&&(aiDir==-2) || (curMove[0]==0)&&(aiDir==-1) || (curMove[1]==0)&&(aiDir==2) || (curMove[0]==9)&&(aiDir==1)) {
+						aiLen = 0;
+					}
+					if (aiDir == 0) {
 						curMove = randomMove();
-						aiDir = 0;
 						aiLen = 0;
 					}
 					aiPrevMove = curMove;	
+					aiDir = aiNextDir(curMove, aiDir);
 				} else { // Missed
-					hit = false;
+					h = false;
+					aiLen = 0;
 					if (aiDir != 0) { // If ship was hit before this move
-						aiDir++;
-						if (aiDir == 0) aiDir++;
-						if (aiDir == 3) {
-							aiDir = 0;
+						aiDir = aiNextDir(curMove, aiDir+1);
+						aiLen = 1;
+						if (aiDir == 0)  // Finsihed a ship
 							aiLen = 0;
-						}
-					} else
+					} else {
 						aiPrevMove = curMove;	
+						aiLen = 0;
+					}
 				}
 			}
 		}
 	}
+}
+
+function aiNextDir(curMove, curDir) {
+	var dir = curDir;
+	var nextMove;
+	if (dir > 2 || dir == 0) {
+		dir = 0;
+		nextMove = randomMove();
+	} else {
+		if ((curMove[1] == 9) && (dir == -2))
+			dir++;
+		if ((curMove[0] == 0) && (dir == -1))
+			dir++;
+		if (dir==0)
+			dir++;
+		if ((curMove[0] == 9) && (dir == 1))
+			dir++;
+		nextMove = aiNextMove(curMove, dir, 1);
+		if ((curMove[1] == 0) && (dir == 2)) {
+			dir = 0;
+			nextMove = randomMove();
+		}
+	}
+
+	if (pHit[nextMove[0]][nextMove[1]] || nextMove[0]<0 || nextMove[1]<0) {
+		if (dir == -1)
+			dir = aiNextDir(curMove, dir+2);
+		else if (dir == 0)
+			dir = aiNextDir(curMove, 0);
+		else
+			dir = aiNextDir(curMove, dir+1);
+	}
+	
+	return dir;
+}
+
+function aiNextMove(firstHit, dir, len) {
+	var curMove = [0,0];
+	switch (dir) {
+		case -2:
+			curMove[1] = (firstHit[1]-len)%10;
+			curMove[0] = firstHit[0];
+			break;
+		case 2:
+			curMove[1] = (firstHit[1]+len)%10;
+			curMove[0] = firstHit[0];
+			break;
+		case -1:
+			curMove[0] = (firstHit[0]-len)%10;
+			curMove[1] = firstHit[1];
+			break;
+		case 1:
+			curMove[0] = (firstHit[0]+len)%10;
+			curMove[1] = firstHit[1];
+			break;
+	}
+	return curMove;
 }
 
 function processHit(x, y, side) {
@@ -226,7 +258,13 @@ function string2xy(value) {
 	return [x, y];
 }
 
+var tick = true;
+
 function randomMove() {
+	if (tick) {
+		tick = false;
+		return [1, 9];
+	}
 	var	x = Math.floor(Math.random()*10);
 	var	y = Math.floor(Math.random()*10);
 	while (pHit[x][y]) {

@@ -96,12 +96,12 @@ function drawScene() {
 	textureAndAdd( smallShipShape, extrudeSettings, 4,4, 1,2, 1 );
 	textureAndAdd( medShipShape, extrudeSettings, 6,8, 4,4, 1 );
 	textureAndAdd( largeShipShape, extrudeSettings, 0,0, 6,9, 1 );
-	textureAndAdd( smallShipShape, extrudeSettings, 4,4, 1,2, -1 );
-	textureAndAdd( medShipShape, extrudeSettings, 6,8, 4,4, -1 );
-	textureAndAdd( largeShipShape, extrudeSettings, 0,0, 6,9, -1 );
-	textureAndAdd( largeShipShape, extrudeSettings, 1,1, 6,9, -1 );
-	textureAndAdd( largeShipShape, extrudeSettings, 2,2, 6,9, -1 );
-	textureAndAdd( largeShipShape, extrudeSettings, 3,3, 6,9, -1 );
+	// textureAndAdd( smallShipShape, extrudeSettings, 4,4, 1,2, -1 );
+	// textureAndAdd( medShipShape, extrudeSettings, 6,8, 4,4, -1 );
+	// textureAndAdd( largeShipShape, extrudeSettings, 0,0, 6,9, -1 );
+	// textureAndAdd( largeShipShape, extrudeSettings, 1,1, 6,9, -1 );
+	// textureAndAdd( largeShipShape, extrudeSettings, 2,2, 6,9, -1 );
+	// textureAndAdd( largeShipShape, extrudeSettings, 3,3, 6,9, -1 );
 	
 	// debugaxis(1000);
 }
