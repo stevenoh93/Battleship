@@ -1,3 +1,9 @@
+function clickPlay() {
+	gameInProgress = true;
+	document.getElementById("enterpos").style.display = "none";
+	document.getElementById("entermove").style.display = "inline";
+}
+
 // Create axis (point1, point2, colour)
 function createAxis(p1, p2, color){
     var line, lineGeometry = new THREE.Geometry(),
@@ -13,7 +19,8 @@ function createAxis(p1, p2, color){
 // side=-1 for player's board, 1 for ai's board
 function board2canvas(sx, sy, ex, ey, side) {
 	if (sx == ex) {
-		var length = Math.abs(ey - sy) + 1;
+		var length = ey - sy;
+		if (length > 0) length++; else length--;
 		return {
 			xcoord : (sx*20+10) - 100 + side*200,
 			ycoord : 100 - (sy*20 + 10*length),
@@ -38,29 +45,37 @@ function xy2lin(xcoord, ycoord, side) {
 }
 
 function makeMove(event) {
-	if (event.keyCode == 13 && gameInProgress) { // Enter
+	if (!gameInProgress && event.keyCode == 13) { // Ship positioned
+		var input = document.getElementById("pos");
+		var value = input.value;
+		input.value = "";
+		var points = value.split(" ");
+		var start = string2xy(points[0]);
+		var end = string2xy(points[1]);
+		var length = Math.max(Math.abs(start[0]-end[0]), Math.abs(start[1]-end[1]));
+		switch (length) {
+			case 1:
+				textureAndAdd(smallShipShape, extrudeSettings, start[0],end[0], start[1],end[1], -1);
+				break;
+			case 2:
+				textureAndAdd(medShipShape, extrudeSettings, start[0],end[0], start[1],end[1], -1);
+				break;
+			case 3:
+				textureAndAdd(largeShipShape, extrudeSettings, start[0],end[0], start[1],end[1], -1);
+				break;
+		}
+	}
+	if (gameInProgress && event.keyCode == 13) { // Move made
 		var input = document.getElementById("move");
 		var value = input.value;
 		input.value = "";
 
-		if (isNaN(value[0])) {
-			var x = parseInt(value[1]);
-			if (value[0].charCodeAt(0) > 96)
-				var y = value[0].charCodeAt(0) - 97;
-			else	
-				var y = value[0].charCodeAt(0) - 65;
-		} else {
-			if (value[1].charCodeAt(0) > 96)
-				var y = value[1].charCodeAt(0) - 97;
-			else	
-				var y = value[1].charCodeAt(0) - 65;
-			var x = parseInt(value[0]);			
-		}
-		console.log("("+x+", "+y+")");
-		if (processHit(x,y,1)) {
+		var point = string2xy(value);
+
+		if (processHit(point[0],point[1],1)) {
 			// Display hit
 			console.log("HIT");
-			gameInProgress = checkGameOver();
+			gameInProgress = !checkGameOver();
 		}
 		else {
 			// AI move
@@ -116,4 +131,21 @@ function printMatrix(mat) {
 		console.log(out);
 		out = "";
 	}
+}
+
+function string2xy(value) {
+	if (isNaN(value[0])) {
+		var x = parseInt(value[1]);
+		if (value[0].charCodeAt(0) > 96)
+			var y = value[0].charCodeAt(0) - 97;
+		else	
+			var y = value[0].charCodeAt(0) - 65;
+	} else {
+		if (value[1].charCodeAt(0) > 96)
+			var y = value[1].charCodeAt(0) - 97;
+		else	
+			var y = value[1].charCodeAt(0) - 65;
+		var x = parseInt(value[0]);			
+	}
+	return [x, y];
 }

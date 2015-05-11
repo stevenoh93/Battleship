@@ -18,19 +18,25 @@
 		</script>
 
 		<body>
-			<div id="winmessage" style="position:absolute; left:45%; top:10%; display:none">
+			<div id="winmessage" style="position:absolute; width:300px; left:50%; margin-left:-150px; top:10%; text-align:center; display:none">
 				<font color="white" size="15px">YOU WON!!</font><br>
 				<font color="white" size="4px">Please fresh the page to play again</font>
 			</div>
-			<div id="lostmessage" style="position:absolute; left:45%; top:10%; display:none"> 
+			<div id="lostmessage" style="position:absolute; width:300px; left:50%; margin-left:-150px; top:10%; text-align:center; display:none"> 
 				<font color="white" size="15px">YOU LOST!</font><br>
 				<font color="white" size="4px">Please fresh the page to play again</font>
 			</div>
 			<div style="max-height:300px; max-width:300px;" id="container"> </div>
-			<div style="position:absolute; left:47%; bottom:10%"> 
+			<div id="entermove" style="position:absolute; left:47%; bottom:10%; display:none"> 
 				<font color="white" size="5px">Enter your move<br></font>
-				<input  id="move" type="text" name="numTurns" >
+				<input id="move" type="text" /><br>
 			</div>
+			<div id="enterpos" style="position:absolute; width:700px; left:50%; margin-left:-350px; text-align:center; bottom:5%"> 
+				<font color="white" size="5px">Enter the endpoints of a boat you want to place and press enter<br>Choose from length 2, 3, or 4<br></font>
+				<input id="pos" type="text" /><br>
+				<input id="submit"type="button" value="PLAY!" />
+			</div>
+			
 		</body>
 		
 	</head>
