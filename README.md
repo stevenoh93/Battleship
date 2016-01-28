@@ -1,1 +1,1 @@
-Board game Battleship for ECE462 Final project
+An interactive version of the classic board game Battleship using WebGL
